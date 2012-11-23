@@ -118,11 +118,13 @@ class NeuralNetwork(object):
             if it % 100 == 0:
                 print cost
 
-            if cost <= 1.0E-1:
+            if cost <= 1.0E-2:
                 break
 
+import json
+
 # hidden = Layer()
-# hidden.nodes = [Node(), Node(), Node()]
+# hidden.nodes = [Node(), Node()]
 
 # output = Layer()
 # output.nodes = [Node()]
@@ -132,12 +134,12 @@ class NeuralNetwork(object):
 # nn.add_layer(hidden)
 # nn.add_layer(output)
 
-# trainingset = [
-#     ([0, 0], [1]),
-#     ([1, 0], [0]),
-#     ([0, 1], [0]),
-#     ([1, 1], [1])
-# ]
+trainingset = [
+    ([0, 0], [1]),
+    ([1, 0], [0]),
+    ([0, 1], [0]),
+    ([1, 1], [1])
+]
 
 # nn.train(trainingset, 1000000)
 
@@ -149,15 +151,12 @@ class NeuralNetwork(object):
 # for l in nn.layers:
 #     nw = []
 #     for n in range(len(l.nodes)):
-#         nw.append(l.nodes[n].weights)
-#         nw.append(l.nodes[n].bias_weight)
+#         nw.append([l.nodes[n].weights, \
+#             l.nodes[n].bias_weight])
 #     out.append(nw)
 
-# import json
 # with open('dump.nn', 'w') as f:
 #     f.write(json.dumps(out))
-
-import json
 
 nnd = ''
 with open('dump.nn', 'r') as f:
@@ -166,17 +165,13 @@ with open('dump.nn', 'r') as f:
 nn = NeuralNetwork()
 for l in nnd:
     layer = Layer()
-    for k in l:
+    for n in l:
         node = Node()
-        print l
-        node.weights = k[0]
-        node.bias_weight = k[1]
+        node.weights = n[0]
+        node.bias_weight = n[1]
         layer.nodes.append(node)
     nn.add_layer(layer, False)
 
-for l in nn.layers:
-    for n in l.nodes:
-        print n.weights, n.bias_weight
-nn.activate([0, 0])
-
-print nn.output
+for t in trainingset:
+    nn.activate(t[0])
+    print nn.output
